@@ -1,6 +1,6 @@
 /* 
  * Primary file for the API
- * This is the configuration branch.
+ * This is the master branch.
  */
 
 // Libraries
