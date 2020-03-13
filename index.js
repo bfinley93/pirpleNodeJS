@@ -12,6 +12,9 @@ const server = http.createServer(function(req, res){
     const path = parsedUrl.pathname;
     const trimmedPath = path.replace(/^\/+|\/+$/g, '');
 
+    // Get the query string as an object, so what is the end of the directory "https:www.hitsujistories.com/sheep-tag?fizz=buzz"
+    const queryStringObject = parsedUrl.query;
+
     // Get the HTTP Method: GET, POST, DELETE, PUT, HEAD, PATCH, OPTIONS
     const method = req.method.toLowerCase();
 
@@ -19,7 +22,7 @@ const server = http.createServer(function(req, res){
     res.end('Hello World\n');
 
     // Log the request path
-    console.log('Request received on path: '+trimmedPath+ ' with method: '+method);
+    console.log('Request received on path: '+trimmedPath+ ' with method: '+method+ ' and with these query string parameters', queryStringObject);
 });
 
 // Start the server, and have it listen on port 3000
