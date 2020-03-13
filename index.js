@@ -5,18 +5,44 @@
 
 // Libraries
 const http = require("http"); // hosting the server, currently locally http://localhost:3000; Wonder what this means when you put it on production.
+const https = require("https");
 const url = require("url"); // making an API
 const StringDecoder = require("string_decoder").StringDecoder; // allows payloads to be read through a stream bit by bit
 const config = require("./config"); // production or staging environments based on NODE_ENV command line argument
+const fs = require("fs"); // used to read the cert and key values for the https server
 
-// The server should respond to all requests with a string, meaning whenever someone visits the website or makes and api call.
-const server = http.createServer(function(req, res) {
+// Instantiate the HTTP server
+const httpServer = http.createServer(function(req, res) {
+  unifiedServer(req, res);
+});
+
+// Start the server
+httpServer.listen(config.httpPort, function() {
+  console.log("The server is listening on port " + config.httpPort);
+});
+
+// Instantiate the HTTPS server
+const httpsServerOptions = {
+  key: fs.readFileSync("./https/key.pem"),
+  cert: fs.readFileSync("./https/cert.pem")
+};
+const httpsServer = https.createServer(httpsServerOptions, function(req, res) {
+  unifiedServer(req, res);
+});
+
+// Start the HTTPS server
+httpsServer.listen(config.httpsPort, function() {
+  console.log("The server is listening on port " + config.httpsPort);
+});
+
+// All the server logic for both the https and http servers
+const unifiedServer = function(req, res) {
   // Get the URL and parse it, meaning get the directory of the website after the domain. "Domain: https:www.hitsujistories.com" "Directory: /sheep-tag/"
   const parsedUrl = url.parse(req.url, true);
 
   // Get the path
   const path = parsedUrl.pathname;
-  const trimmedPath = path.replace(/^\/+|\/+$/g, "");
+  const trimmedPath = path.replace(/^\/+|\/+$/g, ""); // Regex for getting rid of extra characters in the directory of URL
 
   // Get the query string as an object, so what is the end of the directory "https:www.hitsujistories.com/sheep-tag?fizz=buzz"
   const queryStringObject = parsedUrl.query;
@@ -76,18 +102,7 @@ const server = http.createServer(function(req, res) {
       console.log("Returning this response: ", statusCode, payloadString);
     });
   });
-});
-
-// Start the server
-server.listen(config.port, function() {
-  console.log(
-    "The server is listening on port " +
-      config.port +
-      " in " +
-      config.envName +
-      " mode."
-  );
-});
+};
 
 // Define the handlers
 const handlers = {};
