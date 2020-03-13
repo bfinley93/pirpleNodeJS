@@ -27,7 +27,7 @@ const server = http.createServer(function(req, res) {
   const headers = req.headers;
 
   /* Overview of the decoder and buffer:
-   * Created a decoder that we are using later on, the buffer is a place holder for a string, as the request comes in the buffer streams
+   * The buffer is a place holder for a string, as the request comes in the buffer streams
    * in data and adds it to the buffer, the request object is going to emit a data event that we are binding on, so the req.on data then
    * we use the decoder utf-8 to turn it into a string. Then we end the decoder, send the response, and log out the payload.
    */
