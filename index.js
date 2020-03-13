@@ -1,4 +1,4 @@
-/* 
+/*
  * Primary file for the API
  *
  */
@@ -7,10 +7,11 @@
 const http = require("http"); // hosting the server, currently locally http://localhost:3000; Wonder what this means when you put it on production.
 const url = require("url"); // making an API
 const StringDecoder = require("string_decoder").StringDecoder; // allows payloads to be read through a stream bit by bit
+const config = require("./config"); // production or staging environments based on NODE_ENV command line argument
 
 // The server should respond to all requests with a string, meaning whenever someone visits the website or makes and api call.
 const server = http.createServer(function(req, res) {
-  // Get the URL and parse it, meaning get the directory of the website after the domain. "Domain: https:www.dogsofthelaw.com" "Directory: /sheep-tag/"
+  // Get the URL and parse it, meaning get the directory of the website after the domain. "Domain: https:www.hitsujistories.com" "Directory: /sheep-tag/"
   const parsedUrl = url.parse(req.url, true);
 
   // Get the path
@@ -67,7 +68,7 @@ const server = http.createServer(function(req, res) {
       const payloadString = JSON.stringify(payload);
 
       // Return the response
-      res.setHeader('Content-Type', 'application/json');
+      res.setHeader("Content-Type", "application/json");
       res.writeHead(statusCode);
       res.end(payloadString);
 
@@ -77,9 +78,15 @@ const server = http.createServer(function(req, res) {
   });
 });
 
-// Start the server, and have it listen on port 3000
-server.listen(3000, function() {
-  console.log("The server is listening on port 3000.");
+// Start the server
+server.listen(config.port, function() {
+  console.log(
+    "The server is listening on port " +
+      config.port +
+      " in " +
+      config.envName +
+      " mode."
+  );
 });
 
 // Define the handlers
